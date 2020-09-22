@@ -44,7 +44,7 @@ static const Layout layouts[] = {
 };
 
 /* key definitions */
-#define MODKEY Mod1Mask
+#define MODKEY Mod4Mask
 #define TAGKEYS(KEY,TAG) \
 	{ MODKEY,                       KEY,      view,           {.ui = 1 << TAG} }, \
 	{ MODKEY|ControlMask,           KEY,      toggleview,     {.ui = 1 << TAG} }, \
@@ -61,25 +61,25 @@ static const char *termcmd[]  = { "termite", NULL };
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
-	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
-	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
-	{ MODKEY,                       XK_b,      togglebar,      {0} },
-	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
-	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
-	{ MODKEY,                       XK_i,      incnmaster,     {.i = +1 } },
-	{ MODKEY,                       XK_d,      incnmaster,     {.i = -1 } },
-	{ MODKEY,                       XK_h,      setmfact,       {.f = -0.05} },
-	{ MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },
-	{ MODKEY,                       XK_Return, zoom,           {0} },
-	{ MODKEY,                       XK_Tab,    view,           {0} },
-	{ MODKEY|ShiftMask,             XK_c,      killclient,     {0} },
-	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
-	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
-	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
-	{ MODKEY,                       XK_space,  setlayout,      {0} },
-	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
-	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
-	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
+	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },       /* dmenu */
+	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },        /* terminal */ 
+	{ MODKEY,                       XK_b,      togglebar,      {0} },                    /* toggle bar*/                                                                                     
+	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },             /* stack focus heigher */
+	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },             /* stack focus lower */
+	{ MODKEY,                       XK_i,      incnmaster,     {.i = +1 } },             /* master number increase */
+	{ MODKEY,                       XK_d,      incnmaster,     {.i = -1 } },             /* master number decrease */
+	{ MODKEY,                       XK_h,      setmfact,       {.f = -0.05} },           /* master size increase */
+	{ MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },           /* master size decrease */
+	{ MODKEY,                       XK_Return, zoom,           {0} },                    /* bring focused to top of the stack */
+	{ MODKEY,                       XK_Tab,    view,           {0} },                    /* toggle view to the last viewed tag */
+	{ MODKEY|ShiftMask,             XK_q,      killclient,     {0} },                    /* kill client */
+	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },     /* layout to tile */
+	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },     /* layout to floating */
+	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },     /* layout to monocle */
+	{ MODKEY,                       XK_space,  setlayout,      {0} },                    /* layout to default (?) */
+	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },                    /* toggle floating for active client */
+	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },            /* view all tags */
+	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },            /* tag focused to 0, making it sticky */
 	{ MODKEY,                       XK_comma,  focusmon,       {.i = -1 } },
 	{ MODKEY,                       XK_period, focusmon,       {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
@@ -93,7 +93,7 @@ static Key keys[] = {
 	TAGKEYS(                        XK_7,                      6)
 	TAGKEYS(                        XK_8,                      7)
 	TAGKEYS(                        XK_9,                      8)
-	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
+	{ MODKEY|ControlMask,           XK_q,      quit,           {0} },                    /* quit dwm */
 };
 
 /* button definitions */
