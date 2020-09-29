@@ -1,5 +1,7 @@
 /* See LICENSE file for copyright and license details. */
 
+#include "patches/selfrestart.c"
+
 /* appearance */
 static const unsigned int borderpx  = 1;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
@@ -34,7 +36,7 @@ static const Rule rules[] = {
 /* layout(s) */
 static const float mfact     = 0.55; /* factor of master area size [0.05..0.95] */
 static const int nmaster     = 1;    /* number of clients in master area */
-static const int resizehints = 1;    /* 1 means respect size hints in tiled resizals */
+static const int resizehints = 0;    /* 1 means respect size hints in tiled resizals */
 
 static const Layout layouts[] = {
 	/* symbol     arrange function */
@@ -54,20 +56,27 @@ static const Layout layouts[] = {
 /* helper for spawning shell commands in the pre dwm-5.0 fashion */
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
 
+#define TERM "st"
+#define TERMCMD(cmd) { .v = (const char*[]){ TERM, "-e", cmd, NULL } }
+
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
-static const char *termcmd[]  = { "termite", NULL };
+static const char *termcmd[]  = { TERM, NULL };
+static const char *browsercmd[]  = { "brave", NULL };
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },       /* dmenu */
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },        /* terminal */ 
-	{ MODKEY,                       XK_b,      togglebar,      {0} },                    /* toggle bar*/                                                                                     
+	{ MODKEY,                       XK_b,      spawn,          {.v = browsercmd } },     /* browser */ 
+	{ MODKEY,                       XK_v,      spawn,          TERMCMD("nvim") },        /* nvim */ 
+	{ MODKEY|ControlMask,           XK_v,      spawn,          SHCMD("st nvim ~/dev/tools/dwm/config.h") }, 
+	{ MODKEY|ShiftMask,             XK_b,      togglebar,      {0} },                    /* toggle bar*/                          
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },             /* stack focus heigher */
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },             /* stack focus lower */
-	{ MODKEY,                       XK_i,      incnmaster,     {.i = +1 } },             /* master number increase */
-	{ MODKEY,                       XK_d,      incnmaster,     {.i = -1 } },             /* master number decrease */
+	{ MODKEY|ShiftMask,             XK_i,      incnmaster,     {.i = +1 } },             /* master number increase */
+	{ MODKEY|ShiftMask,             XK_d,      incnmaster,     {.i = -1 } },             /* master number decrease */
 	{ MODKEY,                       XK_h,      setmfact,       {.f = -0.05} },           /* master size increase */
 	{ MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },           /* master size decrease */
 	{ MODKEY,                       XK_Return, zoom,           {0} },                    /* bring focused to top of the stack */
@@ -84,6 +93,9 @@ static Key keys[] = {
 	{ MODKEY,                       XK_period, focusmon,       {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
+	{ MODKEY|ShiftMask,             XK_r,      self_restart,   {0} },
+
+	/* TAGS                         key                        tag */
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)
@@ -93,7 +105,9 @@ static Key keys[] = {
 	TAGKEYS(                        XK_7,                      6)
 	TAGKEYS(                        XK_8,                      7)
 	TAGKEYS(                        XK_9,                      8)
+	
 	{ MODKEY|ControlMask,           XK_q,      quit,           {0} },                    /* quit dwm */
+	{ MODKEY|ControlMask,           XK_r,      self_restart,           {0} },                    /* quit dwm */
 };
 
 /* button definitions */
