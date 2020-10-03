@@ -9,15 +9,15 @@ static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
 static const char *fonts[]          = { "monospace:size=10" };
 static const char dmenufont[]       = "monospace:size=10";
-static const char col_gray1[]       = "#222222";
-static const char col_gray2[]       = "#444444";
-static const char col_gray3[]       = "#bbbbbb";
-static const char col_gray4[]       = "#eeeeee";
-static const char col_cyan[]        = "#005577";
+static const char col_gray1[]       = "#1d1f21";
+static const char col_gray2[]       = "#323233";  
+static const char col_gray3[]       = "#929593";
+static const char col_gray4[]       = "#ecebec";
+static const char col_cyan[]        = "#81a2be";
 static const char *colors[][3]      = {
 	/*               fg         bg         border   */
 	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
-	[SchemeSel]  = { col_gray4, col_cyan,  col_cyan  },
+	[SchemeSel]  = { col_gray4, col_gray1,  col_cyan  },
 };
 
 /* tagging */
@@ -65,35 +65,51 @@ static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont,
 static const char *termcmd[]  = { TERM, NULL };
 static const char *browsercmd[]  = { "brave", NULL };
 
+#define METACOMBO MODKEY|ShiftMask
+
+
 static Key keys[] = {
 	/* modifier                     key        function        argument */
+	
+  /* Apps */
 	{ MODKEY,                       XK_d,      			spawn,          {.v = dmenucmd } },       /* dmenu */
-	{ MODKEY|ShiftMask,             XK_Return, 			spawn,          {.v = termcmd } },        /* terminal */ 
+	{ MODKEY,                       XK_Return, 			spawn,          {.v = termcmd } },        /* terminal */ 
 	{ MODKEY,                       XK_b,      			spawn,          {.v = browsercmd } },     /* browser */ 
-	{ MODKEY,                       XK_v,      			spawn,          SHCMD("nvim") },        /* nvim */ 
-	{ MODKEY|ControlMask,           XK_v,      			spawn,          SHCMD("st nvim ~/dev/tools/dwm/config.h") }, 
-	{ MODKEY|ShiftMask,             XK_b,      			togglebar,      {0} },                    /* toggle bar*/                          
+	{ MODKEY,                       XK_v,      			spawn,          TERMCMD("nvim") },        /* nvim */ 
+	{ MODKEY|ControlMask,           XK_v,      			spawn,          TERMCMD("nvim ~/dev/tools/dwm/config.h") }, 
+	
+	/* META ============================================================================= */
+	// General
+	{ METACOMBO,             				XK_b,      			togglebar,      {0} },                    /* toggle bar*/                          
+	{ MODKEY|ControlMask,           XK_q,      			quit,         	{0} },                    /* quit dwm */
+	{ MODKEY|ControlMask,           XK_r,      			self_restart,   {0} },            				/* restart dwm */
+	// Window
+	{ METACOMBO,                    XK_h,      			setmfact,       {.f = -0.05} },           /* master size increase */
+	{ METACOMBO,                    XK_l,      			setmfact,       {.f = +0.05} },           /* master size decrease */
+	{ METACOMBO,                    XK_bracketleft, incnmaster,     {.i = +1 } },           	/* master number increase */
+	{ METACOMBO,                    XK_bracketright,incnmaster,     {.i = -1 } },           	/* master number decrease */
+	// Focus/view
 	{ MODKEY,                       XK_j,      			focusstack,     {.i = +1 } },             /* stack focus heigher */
 	{ MODKEY,                       XK_k,      			focusstack,     {.i = -1 } },             /* stack focus lower */
-	{ MODKEY|ShiftMask,             XK_bracketleft,  	incnmaster,     {.i = +1 } },             /* master number increase */
-	{ MODKEY|ShiftMask,             XK_bracketright,	incnmaster,     {.i = -1 } },             /* master number decrease */
-	{ MODKEY,                       XK_h,      			setmfact,       {.f = -0.05} },           /* master size increase */
-	{ MODKEY,                       XK_l,      			setmfact,       {.f = +0.05} },           /* master size decrease */
-	{ MODKEY,                       XK_Return, 			zoom,           {0} },                    /* bring focused to top of the stack */
+	{ MODKEY,                       XK_space, 			zoom,           {0} },                    /* bring focused to top of the stack */
 	{ MODKEY,                       XK_Tab,    			view,           {0} },                    /* toggle view to the last viewed tag */
-	{ MODKEY|ShiftMask,             XK_q,      			killclient,     {0} },                    /* kill client */
+	{ METACOMBO,                    XK_q,      			killclient,     {0} },                    /* kill client */
+	{ MODKEY,                       XK_0,      			view,           {.ui = ~0 } },            /* view all tags */
+	{ METACOMBO,                    XK_0,      			tag,            {.ui = ~0 } },            /* tag focused to 0, making it sticky */
+	/* Layouts */
 	{ MODKEY,                       XK_t,      			setlayout,      {.v = &layouts[0]} },     /* layout to tile */
 	{ MODKEY,                       XK_f,      			setlayout,      {.v = &layouts[1]} },     /* layout to floating */
 	{ MODKEY,                       XK_m,      			setlayout,      {.v = &layouts[2]} },     /* layout to monocle */
-	{ MODKEY,                       XK_space,  			setlayout,      {0} },                    /* layout to default (?) */
-	{ MODKEY|ShiftMask,             XK_space,  			togglefloating, {0} },                    /* toggle floating for active client */
-	{ MODKEY,                       XK_0,      			view,           {.ui = ~0 } },            /* view all tags */
-	{ MODKEY|ShiftMask,             XK_0,      			tag,            {.ui = ~0 } },            /* tag focused to 0, making it sticky */
+	{ METACOMBO,                    XK_f,  					setlayout,      {0} },                    /* toggle between floating and previous layout  */
+	{ MODKEY|ControlMask,           XK_f,  					togglefloating, {0} },                    /* toggle floating specifically for active client */
+	// Not classified
 	{ MODKEY,                       XK_comma,  			focusmon,       {.i = -1 } },
 	{ MODKEY,                       XK_period, 			focusmon,       {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_comma,  			tagmon,         {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_period, 			tagmon,         {.i = +1 } },
-	{ MODKEY|ShiftMask,             XK_r,      			self_restart,   {0} },
+  
+	/* Media keys */
+	// TODO
 
 	/* TAGS                         key                        tag */
 	TAGKEYS(                        XK_1,                      0)
@@ -106,8 +122,6 @@ static Key keys[] = {
 	TAGKEYS(                        XK_8,                      7)
 	TAGKEYS(                        XK_9,                      8)
 	
-	{ MODKEY|ControlMask,           XK_q,      quit,           {0} },                    /* quit dwm */
-	{ MODKEY|ControlMask,           XK_r,      self_restart,           {0} },                    /* quit dwm */
 };
 
 /* button definitions */
