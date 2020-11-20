@@ -64,6 +64,7 @@ static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() 
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
 static const char *termcmd[]  = { TERM, NULL };
 static const char *browsercmd[]  = { "brave", NULL };
+static const char *cwdtermcmd[]  = { "alacritty", "--working-directory", "`xcwd`", NULL };
 
 #define METACOMBO MODKEY|ShiftMask
 
@@ -77,6 +78,7 @@ static Key keys[] = {
 	{ MODKEY,                       XK_b,      			spawn,          {.v = browsercmd } },     /* browser */ 
 	{ MODKEY,                       XK_v,      			spawn,          TERMCMD("nvim") },        /* nvim */ 
 	{ MODKEY|ControlMask,           XK_v,      			spawn,          TERMCMD("nvim ~/dev/tools/dwm/config.h") }, 
+	{ MODKEY|ControlMask,           XK_Return,  		spawn,          {.v = cwdtermcmd }}, 
 	
 	/* META ============================================================================= */
 	// General
